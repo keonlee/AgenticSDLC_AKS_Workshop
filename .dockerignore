@@ -1,0 +1,10 @@
+.git
+.github
+.local
+.venv
+**/__pycache__
+**/*.pyc
+docs
+argocd
+deploy
+scripts

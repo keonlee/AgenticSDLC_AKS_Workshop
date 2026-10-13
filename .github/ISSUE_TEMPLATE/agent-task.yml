@@ -1,0 +1,39 @@
+name: Agent implementation task
+description: Specify a bounded feature for Copilot with verifiable acceptance criteria.
+title: "[Workshop] "
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: User outcome
+      description: What should a user be able to do?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Include exact routes, response shapes, invalid input, and boundaries.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and guardrails
+      value: |
+        Keep the app dependency-free.
+        Preserve existing endpoints.
+        Do not edit workflows, Azure identity, deployment manifests, or Argo CD settings.
+        Do not provision resources, deploy, or merge the PR.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Required evidence
+      value: |
+        Add unit and HTTP tests.
+        Run the repository's test command and report results.
+        Link this issue in the PR and explain implementation decisions.
+    validations:
+      required: true
