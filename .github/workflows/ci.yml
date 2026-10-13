@@ -1,0 +1,35 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test app
+        run: python -m unittest discover -s app -p "test_*.py" -v
+      - name: Test release tooling
+        run: python -m unittest discover -s scripts -p "test_*.py" -v
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: v1.34.1
+      - name: Render deployment manifests
+        run: kubectl kustomize deploy/overlays/dev > /tmp/rendered.yaml
+      - name: Build container
+        run: docker build --build-arg APP_VERSION="$GITHUB_SHA" -t workshop-app:ci .
+      - name: Smoke test container
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name workshop-smoke -p 127.0.0.1:8080:8080 workshop-app:ci
+          trap 'docker logs workshop-smoke; docker rm -f workshop-smoke' EXIT
+          curl --fail --retry 15 --retry-all-errors --retry-delay 1 --max-time 5 http://127.0.0.1:8080/healthz
+          curl --fail http://127.0.0.1:8080/version

@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: workshop-app
+  namespace: argocd
+spec:
+  project: workshop
+  source:
+    repoURL: git@github.com:YOUR_ORG/YOUR_REPO.git
+    targetRevision: main
+    path: deploy/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: workshop-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

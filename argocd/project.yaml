@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: workshop
+  namespace: argocd
+spec:
+  description: Workshop development workloads only
+  sourceRepos:
+    - git@github.com:YOUR_ORG/YOUR_REPO.git
+  destinations:
+    - namespace: workshop-dev
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ""
+      kind: Service
